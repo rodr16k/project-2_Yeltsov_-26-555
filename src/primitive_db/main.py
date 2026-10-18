@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from primitive_db.engine import welcome, prompt_input, info
+from primitive_db.engine import welcome, prompt_input, print_help
 from primitive_db.utils import parse_user_input
 from primitive_db.core import Table
 
@@ -24,7 +24,7 @@ def main():
         case 'exit':
             pass
         case 'help':
-            info()
+            print_help()
 
 
 if __name__ == "__main__":

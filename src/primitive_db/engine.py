@@ -1,28 +1,40 @@
 import prompt
-
-commands = {
-    'create_tables <имя_таблицы> <столбец1:тип> <столбец2:тип>': 'создать таблицу',
-    'list_tables': 'показать таблицы',
-    'drop_tables <имя_таблицы>': 'удалить таблицу',
-    'exit': 'выйти из программы',
-    'help': 'справочная информация'
-}
+from primitive_db.utils import load_metadata, save_metadata
+from primitive_db.utils import parse_user_input, prompt_input, print_help, welcome
 
 
-def info():
-    print("\nДоступные команды:\n")
-    for k, v in commands.items():
-        print(f"<command> {k} - {v}")
-
-    return None
+DB_FILE = 'db_meta.json'
 
 
-def welcome():
-    """ Выводит список комманд и возвращает ввод пользователя"""
-    info()
-    return None
+def run():
+    db = load_metadata(DB_FILE)
+    if not db:
+        db = {
+            'tables': {
+                'users': {
+                    'columns': ['ID'],
+                    'rows': {'ID': 1}
+                }
+            }
+        }
+        save_metadata(DB_FILE, db)
 
+    welcome()
+    input_string = prompt_input()
+    parsed_user_input = parse_user_input(input_string)
+    command = parsed_user_input[0]
 
-def prompt_input():
-    user_input = prompt.string("Введите команду: ")
-    return user_input
+    match command:
+        case 'unknown':
+            print('Для проверки доступных комманд введите help')
+        case 'create_table':
+            print(
+                f"Таблица {parsed_user_input[1]} успешно создана со столбцами: {parse_user_input[2]}")
+        case 'list_tables':
+            pass
+        case 'drop_table':
+            pass
+        case 'exit':
+            pass
+        case 'help':
+            print_help()
