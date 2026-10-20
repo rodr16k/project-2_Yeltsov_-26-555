@@ -36,7 +36,7 @@ def load_metadata(filepath):
     """
 
     try:
-        with open(filepath, 'r', encoding='utf=8') as f:
+        with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"Файл {filepath} не найден.\nСоздается новая база данных.")
