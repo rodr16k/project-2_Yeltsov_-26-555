@@ -98,3 +98,14 @@ def parse_user_input(user_input: str) -> tuple:
 def prompt_input():
     user_input = prompt.string("Введите команду: ")
     return user_input
+
+
+def welcome():
+    print("***База данных***\n")
+    print('Функции:\n'
+          '<create_tables> <имя_таблицы> <столбец1:тип> <столбец2:тип> - создать таблицу,\n'
+          '<list_tables>: - показать таблицы,\n'
+          '<drop_tables> <имя_таблицы> - удалить таблицу,\n'
+          '<exit>: выйти из программы,\n'
+          '<help>: справочная информация.\n'
+          )
