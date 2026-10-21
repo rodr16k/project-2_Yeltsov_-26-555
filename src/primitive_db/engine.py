@@ -43,7 +43,7 @@ def run():
                     db, parsed_user_input[1], parsed_user_input[2])
                 print(
                     f"Таблица {parsed_user_input[1]}"
-                    f"успешно создана со столбцами: {parsed_user_input[2]}")
+                    f" успешно создана со столбцами: {parsed_user_input[2]}")
             case 'list_tables':
                 print("Сохраненные таблицы: ")
                 list_tables(db)

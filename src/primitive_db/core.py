@@ -7,12 +7,19 @@ def create_table(metadata, table_name, columns):
     if table_name in metadata['tables']:
         raise ValueError('Таблица с таким именем уже существует')
 
+    has_id = False
     for col, type in columns.items():
         if type not in ('int', 'str', 'bool'):
             raise TypeError(f"Столбец {col} имеет недопустимый тип: {type}"
                             f"Доступные типы: int, str, bool")
+        if col.lower() == 'id':
+            has_id = True
 
-    all_cols = {'ID': 'int', **columns}
+    if has_id:
+        all_cols = {**columns}
+    else:
+        all_cols = {'ID': 'int', **columns}
+
     metadata['tables'][table_name] = {
         'columns': all_cols,
         'rows': []
