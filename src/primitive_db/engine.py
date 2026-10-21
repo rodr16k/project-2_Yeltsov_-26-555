@@ -1,7 +1,10 @@
-from primitive_db.utils import load_metadata, save_metadata
-from primitive_db.utils import parse_user_input, prompt_input
 from primitive_db.core import create_table, drop_table, list_tables
-
+from primitive_db.utils import (
+    load_metadata,
+    parse_user_input,
+    prompt_input,
+    save_metadata,
+)
 
 DB_FILE = 'db_meta.json'
 
@@ -39,9 +42,10 @@ def run():
                 db = create_table(
                     db, parsed_user_input[1], parsed_user_input[2])
                 print(
-                    f"Таблица {parsed_user_input[1]} успешно создана со столбцами: {parsed_user_input[2]}")
+                    f"Таблица {parsed_user_input[1]}"
+                    f"успешно создана со столбцами: {parsed_user_input[2]}")
             case 'list_tables':
-                print(f"Сохраненные таблицы:")
+                print("Сохраненные таблицы: ")
                 list_tables(db)
             case 'drop_table':
                 db = drop_table(db, parsed_user_input[1])

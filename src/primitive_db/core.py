@@ -1,6 +1,3 @@
-from primitive_db.utils import load_metadata
-
-
 def create_table(metadata, table_name, columns):
     """ 
     Принимает метаданные, имя таблицы и список столбцов.

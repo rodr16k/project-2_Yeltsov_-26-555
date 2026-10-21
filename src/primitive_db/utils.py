@@ -1,7 +1,7 @@
 import json
 import os
-import prompt
 
+import prompt
 
 commands = {
     'create_tables <имя_таблицы> <столбец1:тип> <столбец2:тип>': 'создать таблицу',
