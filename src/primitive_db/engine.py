@@ -4,6 +4,7 @@ from primitive_db.utils import (
     parse_user_input,
     prompt_input,
     save_metadata,
+    welcome
 )
 
 DB_FILE = 'db_meta.json'
@@ -27,6 +28,7 @@ def print_help():
 
 def run():
     db = load_metadata(DB_FILE)
+    welcome()
 
     while True:
         input_str = prompt_input()
