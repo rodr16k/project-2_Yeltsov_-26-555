@@ -26,7 +26,7 @@
 *    **help** - справочная информация.
 
 ## Пример использования:  
-[![asciinema](https://asciinema.org/a/Y1HfFC5y7NqGoIAL.svg)](https://asciinema.org/a/Y1HfFC5y7NqGoIAL)
+[![asciicast](https://asciinema.org/a/Y1HfFC5y7NqGoIAL.svg)](https://asciinema.org/a/Y1HfFC5y7NqGoIAL)
 
 * **Создание таблицы:**
   ```text
