@@ -4,12 +4,10 @@ from primitive_db.utils import (
     parse_user_input,
     prompt_input,
     save_metadata,
-    welcome
+    welcome,
 )
 
 DB_FILE = 'db_meta.json'
-
-# src/primitive_db/engine.py
 
 
 def run():
