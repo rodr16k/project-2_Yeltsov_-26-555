@@ -26,7 +26,6 @@ def save_metadata(filepath, data):
         return True
     except Exception as e:
         print(f"При сохранении базы данных произошла ошибка: {e}")
-        return False
 
 
 def load_metadata(filepath):
@@ -52,22 +51,22 @@ def parse_user_input(user_input: str) -> tuple:
     user_input_list = user_input.strip().split()
 
     if not user_input_list:
-        return ("unknown", None)
+        raise ValueError()
 
     command = user_input_list[0]
 
     if command == 'create_table':
 
         if len(user_input_list) < 3:
-            print("Недостаточно аргументов для создания таблицы")
-            return ('unknown', None)
+            raise ValueError("Недостаточно аргументов для создания таблицы.")
 
         table_name = user_input_list[1]
         columns = {}
 
         for col in user_input_list[2:]:
             if ':' not in col:
-                print('Неверный формат столбцов. Ожидается: <name:type>')
+                raise ValueError(
+                    'Неверный формат столбцов. Ожидается: <name:type>.')
 
             col_name, col_type = col.split(':', 1)
             columns[col_name] = col_type
@@ -80,8 +79,7 @@ def parse_user_input(user_input: str) -> tuple:
     if command == 'drop_table':
 
         if len(user_input_list) < 2:
-            print("Укажите имя таблицы для удаления")
-            return ('unknown', None)
+            raise ValueError("Укажите имя таблицы для удаления.")
         drop_name = user_input_list[1]
         return (command, drop_name)
 
@@ -91,8 +89,8 @@ def parse_user_input(user_input: str) -> tuple:
     if command == 'help':
         return (command,)
 
-    print(f'Неизвестная команда: {command}')
-    return ('unknown', None)
+    raise ValueError(
+        f'Неизвестная команда: {command}.')
 
 
 def prompt_input():
@@ -103,9 +101,9 @@ def prompt_input():
 def welcome():
     print("***База данных***\n")
     print('Функции:\n'
-          '<create_tables> <имя_таблицы> <столбец1:тип> <столбец2:тип> - создать таблицу,\n'
+          '<create_table> <имя_таблицы> <столбец1:тип> <столбец2:тип> - создать таблицу,\n'
           '<list_tables>: - показать таблицы,\n'
-          '<drop_tables> <имя_таблицы> - удалить таблицу,\n'
+          '<drop_table> <имя_таблицы> - удалить таблицу,\n'
           '<exit>: выйти из программы,\n'
           '<help>: справочная информация.\n'
           )
