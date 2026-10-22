@@ -17,9 +17,7 @@
    uv tool install .
    ```
 ## Использование:  
-    ```bash
-    database
-    ```
+```bash database```
 ## Управление таблицами: 
 *    **create_tables <имя_таблицы> <столбец1:тип> <столбец2:тип>** - создать таблицу,
 *    **list_tables** - показать таблицы,
@@ -46,6 +44,4 @@
   ```
 
 ## Удаление пакета:  
-    ```bash
-    uv tool uninstall database
-    ```
+```bash uv tool uninstall database```
