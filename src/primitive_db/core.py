@@ -1,5 +1,5 @@
 def create_table(metadata, table_name, columns):
-    """ 
+    """
     Принимает метаданные, имя таблицы и список столбцов.
     Добавляет столбец ID:int в начало.
     Возвращает обновленный словарь metadata.
@@ -10,7 +10,7 @@ def create_table(metadata, table_name, columns):
     has_id = False
     for col, type in columns.items():
         if type not in ('int', 'str', 'bool'):
-            raise TypeError(f"Столбец {col} имеет недопустимый тип: {type}"
+            raise TypeError(f"Столбец {col} имеет недопустимый тип: {type}\n"
                             f"Доступные типы: int, str, bool")
         if col.lower() == 'id':
             has_id = True
@@ -38,10 +38,24 @@ def drop_table(metadata, table_name):
 
 
 def list_tables(metadata):
-    if len(metadata['tables']) == 0:
-        print('Таблицы не найдены')
-        return
+    if 'tables' not in metadata or len(metadata['tables']) == 0:
+        raise ValueError('Таблицы не найдены')
+
+    print("Сохраненные таблицы:")
 
     for index, table in enumerate(metadata['tables'], start=1):
         print(f"{index}: {table}")
-    return
+
+
+def print_help():
+    """Prints the help message for the current mode."""
+
+    print("\n***Процесс работы с таблицей***")
+    print("Функции:")
+    print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
+    print("<command> list_tables - показать список всех таблиц")
+    print("<command> drop_table <имя_таблицы> - удалить таблицу")
+
+    print("\nОбщие команды:")
+    print("<command> exit - выход из программы")
+    print("<command> help - справочная информация\n")
