@@ -1,48 +1,34 @@
 import json
 import os
-
 import prompt
-
-commands = {
-    'create_tables <имя_таблицы> <столбец1:тип> <столбец2:тип>': 'создать таблицу',
-    'list_tables': 'показать таблицы',
-    'drop_tables <имя_таблицы>': 'удалить таблицу',
-    'exit': 'выйти из программы',
-    'help': 'справочная информация'
-}
+from pathlib import Path
 
 
-def save_metadata(filepath, data):
-    """ Сохраняет структуру БД в json-файл."""
-
-    try:
-        dir_name = os.path.dirname(filepath)
-        if dir_name:
-            os.makedirs(dir_name, exist_ok=True)
-
-        with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-
-        return True
-    except Exception as e:
-        print(f"При сохранении базы данных произошла ошибка: {e}")
+DB_DIR = Path('data')
+METADATA_FILE = DB_DIR / 'metadata.json'
 
 
-def load_metadata(filepath):
-    """ 
-    Загружает структуру БД из json-файла.
-    Если файла нет, возвращает пустой словарь.
-    """
+def load_table_data(table_name):
+    '''Загружает данные таблицы'''
+
+    table_path = DB_DIR / f"{table_name}.json"
 
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(table_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"Файл {filepath} не найден.\nСоздается новая база данных.")
-        return {}
-    except json.JSONDecodeError:
-        print("Файл содержит некорректный JSON-код.")
-        return {}
+        raise (f"Таблица {table_name} не существует.")
+
+
+def save_table_data(table_name, data):
+    '''Сохраняет таблицу с измененными данными'''
+
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    table_path = DB_DIR / f"{table_name}.json
+
+    with open(table_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+    return True
 
 
 def parse_user_input(user_input: str) -> tuple:
