@@ -8,7 +8,7 @@ DB_DIR = Path('data')
 METADATA_FILE = DB_DIR / 'metadata.json'
 
 
-def load_table_data(table_name):
+def load_table_data(table_name: str) -> dict:
     '''Загружает данные таблицы'''
 
     table_path = DB_DIR / f"{table_name}.json"
@@ -24,7 +24,7 @@ def save_table_data(table_name, data):
     '''Сохраняет таблицу с измененными данными'''
 
     DB_DIR.mkdir(parents=True, exist_ok=True)
-    table_path = DB_DIR / f"{table_name}.json
+    table_path = DB_DIR / f"{table_name}.json"
 
     with open(table_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False)
