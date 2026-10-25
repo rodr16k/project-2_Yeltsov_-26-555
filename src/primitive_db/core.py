@@ -140,4 +140,19 @@ def update(table_data, set_clause, where_clause):
 
 
 def delete(table_data, where_clause):
-    pass
+    """Удаляет из таблицы строки по условию"""
+
+    col_index = _col_index(table_data['columns'])
+
+    for col in where_clause:
+        if col not in col_index:
+            raise ValueError(f'В таблице нет столбца "{col}".')
+
+    before = len(table_data['rows'])
+
+    table_data['rows'] = [row for row in table_data['rows']
+                          if not _matches(row, where_clause, col_index)]
+
+    # n_deleted = before - len(table_data['rows'])
+
+    return table_data
