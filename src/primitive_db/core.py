@@ -136,7 +136,7 @@ def update(table_data, set_clause, where_clause):
             row[col_index[col]] = val
         updated += 1
 
-    return table_data
+    return updated
 
 
 def delete(table_data, where_clause):
@@ -153,6 +153,6 @@ def delete(table_data, where_clause):
     table_data['rows'] = [row for row in table_data['rows']
                           if not _matches(row, where_clause, col_index)]
 
-    # n_deleted = before - len(table_data['rows'])
+    n_deleted = before - len(table_data['rows'])
 
-    return table_data
+    return n_deleted
