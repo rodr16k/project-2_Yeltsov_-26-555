@@ -59,6 +59,5 @@
 <command> help- справочная информация
 ```
 
-
 ## Удаление пакета:  
 ```uv tool uninstall database```
