@@ -1,11 +1,44 @@
 import json
-import os
 import prompt
 from pathlib import Path
+from prettytable import PrettyTable
 
 
 DB_DIR = Path('data')
 METADATA_FILE = DB_DIR / 'metadata.json'
+
+
+def print_table(table_data: dict):
+    """
+    Печатает таблицу в удобном формате.
+    table_data: {columns: {}, rows: []}
+    """
+    table = PrettyTable()
+    table.field_names = list(table_data['columns'].keys())
+    for row in table_data['rows']:
+        table.add_row(row)
+    print(table)
+
+
+def print_help():
+    """Prints the help message for the current mode."""
+
+    print("\n***Процесс работы с таблицей***")
+    print("Управление таблицами:")
+    print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
+    print("<command> list_tables - показать список всех таблиц")
+    print("<command> drop_table <имя_таблицы> - удалить таблицу")
+
+    print("<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...) - создать запись.")
+    print("<command> select from <имя_таблицы> where <столбец> = <значение> - прочитать записи по условию.")
+    print("<command> select from <имя_таблицы> - прочитать все записи.")
+    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where <столбец_условия> = <значение_условия> - обновить запись.")
+    print("<command> delete from <имя_таблицы> where <столбец> = <значение> - удалить запись.")
+    print("<command> info <имя_таблицы> - вывести информацию о таблице.")
+
+    print("\nДополнительно:")
+    print("<command> exit - выход из программы")
+    print("<command> help - справочная информация\n")
 
 
 def load_table_data(table_name: str) -> dict:
@@ -17,7 +50,7 @@ def load_table_data(table_name: str) -> dict:
         with open(table_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        raise (f"Таблица {table_name} не существует.")
+        raise ValueError(f"Таблица {table_name} не существует.")
 
 
 def save_table_data(table_name, data):
@@ -31,52 +64,24 @@ def save_table_data(table_name, data):
     return True
 
 
-def parse_user_input(user_input: str) -> tuple:
-    """ Разбирает ввод пользователя на команды и аргументы."""
+def delete_table_data(table_name):
+    """Удаляет JSON-файл таблицы, если он существует."""
+    table_path = DB_DIR / f"{table_name}.json"
+    table_path.unlink(missing_ok=True)
 
-    user_input_list = user_input.strip().split()
 
-    if not user_input_list:
-        raise ValueError()
+def load_catalog():
+    try:
+        with open(METADATA_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {'tables': []}
 
-    command = user_input_list[0]
 
-    if command == 'create_table':
-
-        if len(user_input_list) < 3:
-            raise ValueError("Недостаточно аргументов для создания таблицы.")
-
-        table_name = user_input_list[1]
-        columns = {}
-
-        for col in user_input_list[2:]:
-            if ':' not in col:
-                raise ValueError(
-                    'Неверный формат столбцов. Ожидается: <name:type>.')
-
-            col_name, col_type = col.split(':', 1)
-            columns[col_name] = col_type
-
-        return (command, table_name, columns)
-
-    if command == 'list_tables':
-        return (command,)
-
-    if command == 'drop_table':
-
-        if len(user_input_list) < 2:
-            raise ValueError("Укажите имя таблицы для удаления.")
-        drop_name = user_input_list[1]
-        return (command, drop_name)
-
-    if command == 'exit':
-        return (command,)
-
-    if command == 'help':
-        return (command,)
-
-    raise ValueError(
-        f'Неизвестная команда: {command}.')
+def save_catalog(catalog):
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    with open(METADATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(catalog, f, ensure_ascii=False, indent=4)
 
 
 def prompt_input():
