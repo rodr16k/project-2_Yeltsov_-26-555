@@ -1,57 +1,115 @@
-from primitive_db.core import create_table, drop_table, list_tables, print_help, insert, select, delete, update
+from primitive_db.core import (
+    create_table,
+    drop_table,
+    list_tables,
+    insert,
+    select,
+    delete,
+    update,
+    info
+)
 from primitive_db.utils import (
     load_table_data,
-    parse_user_input,
     prompt_input,
     save_table_data,
     welcome,
+    load_catalog,
+    save_catalog,
+    delete_table_data,
+    print_table,
+    print_help
 )
-from primitive_db.parser import _convert_value, parse_set_clause, parse_where_clause
+from primitive_db.parser import (
+    parse_set_clause,
+    parse_where_clause,
+    parse_columns,
+    parse_command,
+    parse_insert,
+    parse_select)
 import prettytable
-
 
 # Управляющие функции для команд, работающих с таблицами
 
-def _cmd_load_table(table_name):
-    try:
-        load_table_data(table_name)
-    except FileNotFoundError as e:
-        raise ValueError(f"Таблица {table_name} не найдена.")
 
-
-def _cmd_insert(table_name, *raw_values):
-    values = tuple(_convert_value(v) for v in raw_values)
-    table_data = load_table_data(table_name)
-    table_data = insert(table_data, values)
+def _cmd_create_table(rest: str):
+    catalog = load_catalog()
+    table_name = rest.strip().split(maxsplit=1)[0]
+    columns = parse_columns(rest)
+    catalog, table_data = create_table(catalog, table_name, columns)
+    save_catalog(catalog)
     save_table_data(table_name, table_data)
+    print(f'Таблица {table_name} создана.')
+
+
+def _cmd_list_tables(rest: str):
+    catalog = load_catalog()
+    list_tables(catalog)
+
+
+def _cmd_drop_table(rest: str):
+    table_name = rest.strip()
+    if not table_name:
+        raise ValueError('Укажите имя таблицы для удаления')
+
+    catalog = load_catalog()
+    catalog = drop_table(catalog, table_name)
+    save_catalog(catalog)
+    delete_table_data(table_name)
+
+
+def _cmd_load_table(table_name):
+    return load_table_data(table_name)
+
+
+def _cmd_insert(rest: str):
+    table_name, values = parse_insert(rest)
+    table_data = _cmd_load_table(table_name)
+    new_table_data = insert(table_data, values)
+    save_table_data(table_name, new_table_data)
     print('Строка добавлена')
 
 
-def _cmd_select(table_name, where_str):
-    where_clause = parse_where_clause(where_str) if where_str else None
+def _cmd_select(rest: str):
+    table_name, where_clause = parse_select(rest)
     table_data = _cmd_load_table(table_name)
     selected = select(table_data, where_clause)
-    print(selected)
+    print_table(selected)
 
 
-def _cmd_delete(table_name, where_str):
+def _cmd_delete(rest: str):
+    from_table = rest.split(maxsplit=2)
+    if 'from' not in from_table:
+        raise ValueError(
+            'Неверный синтаксис. Ожидается: delete from <имя_таблицы>')
+    table_name = from_table[1]
     table_data = _cmd_load_table(table_name)
-    where_clause = parse_where_clause(where_str) if where_str else {}
+    where_clause = parse_where_clause(rest) if 'where' in rest else {}
     if not where_clause:
-        raise ValueError('Для удаления строк требуется указать условие \'where\'. \
-                         Для удаления всей таблицы воспользуйтель \'drop_table\'')
+        raise ValueError("Для удаления строк требуется указать условие \'where\'. "
+                         "Для удаления всей таблицы воспользуйтеcь \'drop_table\'")
     n = delete(table_data, where_clause)
     save_table_data(table_name, table_data)
     print(f"Удалено {n} строк из таблицы {table_name}")
 
 
-def _cmd_update(table_name, set_str, where_str):
+def _cmd_update(rest: str):
+    table_name = rest.split(maxsplit=1)
     table_data = _cmd_load_table(table_name)
-    set_clause = parse_set_clause(set_str)
-    where_clause = parse_where_clause(where_str) if where_str else {}
+    set_clause = parse_set_clause(rest)
+    where_clause = parse_where_clause(rest) if 'where' in rest else {}
     n = update(table_data, set_clause, where_clause)
     save_table_data(table_name, table_data)
     print(f"Обновлено {n} строк в таблице {table_name}")
+
+
+def _cmd_info(rest: str):
+    table_name = rest.strip()
+    table_data = _cmd_load_table(table_name)
+    info(table_name, table_data)
+
+
+def _cmd_help(rest: str):
+    print_help()
 
 
 HANDLERS = {
@@ -61,19 +119,21 @@ HANDLERS = {
     'insert': _cmd_insert,
     'select': _cmd_select,
     'update': _cmd_update,
-    'delete': _cmd_delete
+    'delete': _cmd_delete,
+    'info': _cmd_info,
+    'help': _cmd_help
 }
 EXIT = 'exit'
 
 
 def execute_command(parsed):
-    command, *args = parsed
+    command, rest = parsed
     if command == EXIT:
         return EXIT
     handler = HANDLERS.get(command)
     if handler is None:
         raise ValueError(f'Неизвестная команда: {command}.')
-    handler(*args)
+    handler(rest)
 
 
 def run():
@@ -82,8 +142,8 @@ def run():
     while True:
         user_input = prompt_input()
         try:
-            parsed = parse_user_input(user_input)
+            parsed = parse_command(user_input)
             if execute_command(parsed) == EXIT:
                 break
         except (ValueError, TypeError) as e:
-            print(f"Ошибка: {e}. Попробуйте снова")
+            print(f"Ошибка: {e}\n Попробуйте снова")
