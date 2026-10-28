@@ -1,17 +1,20 @@
 def create_table(metadata, table_name, columns):
     """
-    Принимает метаданные, имя таблицы и список столбцов.
-    Добавляет столбец ID:int в начало.
-    Возвращает обновленный словарь metadata.
+    Принимает каталог (metadata), имя таблицы и словарь столбцов {имя: тип}.
+    Добавляет столбец ID:int в начало, если его нет.
+    Возвращает кортеж:
+        (обновлённый каталог, начальные данные таблицы {'columns': {...}, 'rows': []}).
     """
     if table_name in metadata['tables']:
         raise ValueError('Таблица с таким именем уже существует')
 
     has_id = False
-    for col, type in columns.items():
-        if type not in ('int', 'str', 'bool'):
-            raise TypeError(f"Столбец {col} имеет недопустимый тип: {type}\n"
-                            f"Доступные типы: int, str, bool")
+    for col, col_type in columns.items():
+        if col_type not in ('int', 'str', 'bool'):
+            raise TypeError(
+                f"Столбец {col} имеет недопустимый тип: {col_type}\n"
+                f"Доступные типы: int, str, bool"
+            )
         if col.lower() == 'id':
             has_id = True
 
@@ -20,17 +23,20 @@ def create_table(metadata, table_name, columns):
     else:
         all_cols = {'ID': 'int', **columns}
 
-    metadata['tables'][table_name] = {
+    metadata['tables'].append(table_name)
+
+    table_data = {
         'columns': all_cols,
         'rows': []
     }
-    return metadata
+
+    return metadata, table_data
 
 
 def drop_table(metadata, table_name):
     if table_name in metadata['tables']:
+        metadata['tables'].remove(table_name)
         print(f'Таблица {table_name} удалена.')
-        del metadata['tables'][table_name]
     else:
         raise ValueError(f"Не найдена таблица с именем {table_name}.")
 
@@ -47,26 +53,12 @@ def list_tables(metadata):
         print(f"{index}: {table}")
 
 
-def print_help():
-    """Prints the help message for the current mode."""
-
-    print("\n***Процесс работы с таблицей***")
-    print("Функции:")
-    print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
-    print("<command> list_tables - показать список всех таблиц")
-    print("<command> drop_table <имя_таблицы> - удалить таблицу")
-
-    print("\nОбщие команды:")
-    print("<command> exit - выход из программы")
-    print("<command> help - справочная информация\n")
-
-
 # CRUD Функции
 
 TYPE_MAP = {'int': int, 'str': str, 'bool': bool}
 
 
-def insert(table_data, values):
+def insert(table_data: dict, values: list):
     """
     Добавляет строку в таблицу. 
     ID генерируется автоматически.
@@ -95,8 +87,8 @@ def _col_index(columns):
 
 
 # where_clause после парсинга имеет вид {'столбец': значение}
-def select(table_data, where_clause=None):
-    if not where_clause:
+def select(table_data, where_clause=None) -> dict:
+    if where_clause == None:
         return table_data
 
     col_index = _col_index(table_data['columns'])
@@ -156,3 +148,9 @@ def delete(table_data, where_clause):
     n_deleted = before - len(table_data['rows'])
 
     return n_deleted
+
+
+def info(table_name: str, table_data: dict):
+    print(f'===== Информация о таблице {table_name}: =====\n')
+    print(f'Столбцы:\n {table_data['columns']}')
+    print(f'Всего строк:\n {len(table_data['rows'])}')
