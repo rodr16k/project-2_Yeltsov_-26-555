@@ -93,10 +93,11 @@ def _cmd_delete(rest: str):
 
 
 def _cmd_update(rest: str):
-    table_name = rest.split(maxsplit=1)
+    rest = rest.split(maxsplit=1)
+    table_name, query = rest[0], rest[1]
     table_data = _cmd_load_table(table_name)
-    set_clause = parse_set_clause(rest)
-    where_clause = parse_where_clause(rest) if 'where' in rest else {}
+    set_clause = parse_set_clause(query)
+    where_clause = parse_where_clause(query) if 'where' in query else {}
     n = update(table_data, set_clause, where_clause)
     save_table_data(table_name, table_data)
     print(f"Обновлено {n} строк в таблице {table_name}")
@@ -143,7 +144,11 @@ def run():
         user_input = prompt_input()
         try:
             parsed = parse_command(user_input)
+        except ValueError as e:
+            print(f"Ошибка: {e}\n Попробуйте снова")
+            continue
+        try:
             if execute_command(parsed) == EXIT:
                 break
-        except (ValueError, TypeError) as e:
+        except (ValueError, KeyError) as e:
             print(f"Ошибка: {e}\n Попробуйте снова")
