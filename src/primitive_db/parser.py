@@ -47,7 +47,7 @@ def parse_where_clause(query: str) -> dict:
     try:
         # получаем токены ['where', 'col', '=', 'val']
         tokens = shlex.split(query.strip(), posix=False)
-    except NameError as e:
+    except ValueError as e:
         raise (f'Ошибка кавычек: {e}')
     if 'where' not in tokens:
         raise ValueError('Не найдено ключевое слово \'where\'.')
@@ -56,18 +56,18 @@ def parse_where_clause(query: str) -> dict:
     where_tokens = tokens[start:]
 
     if not where_tokens:
-        raise NameError('Пустое условие \'where\'.')
+        raise ValueError('Пустое условие \'where\'.')
     if len(where_tokens) % 3 != 0:
-        raise NameError('Некорректный синтаксис \'where\':'
-                        'Ожидается: <column> = <value>')
+        raise ValueError('Некорректный синтаксис \'where\':'
+                         'Ожидается: <column> = <value>')
 
     where_clause = {}
 
     for i in range(0, len(where_tokens), 3):
         name, eq, value = where_tokens[i], where_tokens[i+1], where_tokens[i+2]
         if eq != '=':
-            raise NameError('Некорректный синтаксис \'where\':'
-                            'Ожидается: <column> = <value>')
+            raise ValueError('Некорректный синтаксис \'where\':'
+                             'Ожидается: <column> = <value>')
         where_clause[name] = _convert_value(value)
     return where_clause
 
@@ -82,7 +82,7 @@ def parse_columns(columns_str: str) -> dict:
         else:
             continue
     if not columns:
-        raise NameError(
+        raise ValueError(
             f'Неверный формат столбца "{col}". Ожидается: <name:type>.')
     return columns
 
