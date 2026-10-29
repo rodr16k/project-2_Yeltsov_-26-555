@@ -50,7 +50,7 @@ def load_table_data(table_name: str) -> dict:
         with open(table_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        raise ValueError(f"Таблица {table_name} не существует.")
+        raise KeyError(f"Таблица {table_name} не существует.")
 
 
 def save_table_data(table_name, data):
