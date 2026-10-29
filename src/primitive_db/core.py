@@ -1,3 +1,7 @@
+from primitive_db.decorators import handle_db_errors, confirm_action, log_time
+
+
+@handle_db_errors
 def create_table(metadata, table_name, columns):
     """
     Принимает каталог (metadata), имя таблицы и словарь столбцов {имя: тип}.
@@ -6,12 +10,12 @@ def create_table(metadata, table_name, columns):
         (обновлённый каталог, начальные данные таблицы {'columns': {...}, 'rows': []}).
     """
     if table_name in metadata['tables']:
-        raise ValueError('Таблица с таким именем уже существует')
+        raise KeyError('Таблица с таким именем уже существует')
 
     has_id = False
     for col, col_type in columns.items():
         if col_type not in ('int', 'str', 'bool'):
-            raise TypeError(
+            raise ValueError(
                 f"Столбец {col} имеет недопустимый тип: {col_type}\n"
                 f"Доступные типы: int, str, bool"
             )
@@ -33,19 +37,22 @@ def create_table(metadata, table_name, columns):
     return metadata, table_data
 
 
+@confirm_action('удаление таблицы')
+@handle_db_errors
 def drop_table(metadata, table_name):
     if table_name in metadata['tables']:
         metadata['tables'].remove(table_name)
         print(f'Таблица {table_name} удалена.')
     else:
-        raise ValueError(f"Не найдена таблица с именем {table_name}.")
+        raise KeyError(f"Не найдена таблица с именем {table_name}.")
 
     return metadata
 
 
+@handle_db_errors
 def list_tables(metadata):
     if 'tables' not in metadata or len(metadata['tables']) == 0:
-        raise ValueError('Таблицы не найдены')
+        raise KeyError('Таблицы не найдены')
 
     print("Сохраненные таблицы:")
 
@@ -58,6 +65,8 @@ def list_tables(metadata):
 TYPE_MAP = {'int': int, 'str': str, 'bool': bool}
 
 
+@log_time()
+@handle_db_errors
 def insert(table_data: dict, values: list):
     """
     Добавляет строку в таблицу. 
@@ -87,6 +96,8 @@ def _col_index(columns):
 
 
 # where_clause после парсинга имеет вид {'столбец': значение}
+@log_time()
+@handle_db_errors
 def select(table_data, where_clause=None) -> dict:
     if where_clause == None:
         return table_data
@@ -95,7 +106,7 @@ def select(table_data, where_clause=None) -> dict:
 
     for col in where_clause:
         if col not in col_index:
-            raise ValueError(f'В таблице нет столбца {col}')
+            raise KeyError(f'В таблице нет столбца {col}')
 
     matches = []
     for row in table_data['rows']:
@@ -112,13 +123,14 @@ def _matches(row, where_clause, col_index):
     return all(row[col_index[c]] == v for c, v in where_clause.items())
 
 
+@handle_db_errors
 def update(table_data, set_clause, where_clause):
     """Обновляет строки по условию. Возвращает число обновлённых строк."""
     col_index = _col_index(table_data['columns'])
 
     for col in set_clause:
         if col not in col_index:
-            raise ValueError(f'В таблице нет столбца "{col}".')
+            raise KeyError(f'В таблице нет столбца "{col}".')
 
     updated = 0
     for row in table_data['rows']:
@@ -131,6 +143,8 @@ def update(table_data, set_clause, where_clause):
     return updated
 
 
+@confirm_action('удаление записей')
+@handle_db_errors
 def delete(table_data, where_clause):
     """Удаляет из таблицы строки по условию"""
 
