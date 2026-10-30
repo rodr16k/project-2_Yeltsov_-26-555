@@ -1,32 +1,33 @@
+
 from primitive_db.core import (
     create_table,
-    drop_table,
-    list_tables,
-    insert,
-    select,
     delete,
+    drop_table,
+    info,
+    insert,
+    list_tables,
+    select,
     update,
-    info
-)
-from primitive_db.utils import (
-    load_table_data,
-    prompt_input,
-    save_table_data,
-    welcome,
-    load_catalog,
-    save_catalog,
-    delete_table_data,
-    print_table,
-    print_help
 )
 from primitive_db.parser import (
-    parse_set_clause,
-    parse_where_clause,
     parse_columns,
     parse_command,
     parse_insert,
-    parse_select)
-import prettytable
+    parse_select,
+    parse_set_clause,
+    parse_where_clause,
+)
+from primitive_db.utils import (
+    delete_table_data,
+    load_catalog,
+    load_table_data,
+    print_help,
+    print_table,
+    prompt_input,
+    save_catalog,
+    save_table_data,
+    welcome,
+)
 
 # Управляющие функции для команд, работающих с таблицами
 
