@@ -1,8 +1,8 @@
 import json
-import prompt
 from pathlib import Path
-from prettytable import PrettyTable
 
+import prompt
+from prettytable import PrettyTable
 
 DB_DIR = Path('data')
 METADATA_FILE = DB_DIR / 'metadata.json'
@@ -25,15 +25,20 @@ def print_help():
 
     print("\n***Процесс работы с таблицей***")
     print("Управление таблицами:")
-    print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
+    print("<command> create_table <имя_таблицы> <столбец1:тип>\
+           .. - создать таблицу")
     print("<command> list_tables - показать список всех таблиц")
     print("<command> drop_table <имя_таблицы> - удалить таблицу")
 
-    print("<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...) - создать запись.")
-    print("<command> select from <имя_таблицы> where <столбец> = <значение> - прочитать записи по условию.")
+    print("<command> insert into <имя_таблицы> values\
+           (<значение1>, <значение2>, ...) - создать запись.")
+    print("<command> select from <имя_таблицы> where \
+          <столбец> = <значение> - прочитать записи по условию.")
     print("<command> select from <имя_таблицы> - прочитать все записи.")
-    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where <столбец_условия> = <значение_условия> - обновить запись.")
-    print("<command> delete from <имя_таблицы> where <столбец> = <значение> - удалить запись.")
+    print("<command> update <имя_таблицы> set <столбец1> = <новое_значение1>\
+           where <столбец_условия> = <значение_условия> - обновить запись.")
+    print("<command> delete from <имя_таблицы> \
+          where <столбец> = <значение> - удалить запись.")
     print("<command> info <имя_таблицы> - вывести информацию о таблице.")
 
     print("\nДополнительно:")
@@ -91,13 +96,18 @@ def prompt_input():
 
 def welcome():
     print("===== Функции: =====\n")
-    print('<command> create_table <имя_таблицы> <столбец1:тип> <столбец2:тип> - создать таблицу.\n',
+    print('<command> create_table <имя_таблицы> <столбец1:тип> <столбец2:тип>\
+           - создать таблицу.\n',
           '<command> list_tables: - показать таблицы.\n',
           '<command> drop_table <имя_таблицы> - удалить таблицу.\n',
-          '<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...) - создать запись.\n',
-          '<command> select from <имя_таблицы> where <столбец> = <значение> - прочитать записи по условию.\n',
-          '<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where <столбец_условия> = <значение_условия> - обновить запись.\n',
-          '<command> delete from <имя_таблицы> where <столбец> = <значение> - удалить запись.\n',
+          '<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...)\
+              - создать запись.\n',
+          '<command> select from <имя_таблицы> where <столбец> = <значение> \
+            - прочитать записи по условию.\n',
+          '<command> update <имя_таблицы> set <столбец1> = <новое_значение1> \
+            where <столбец_условия> = <значение_условия> - обновить запись.\n',
+          '<command> delete from <имя_таблицы> where <столбец> = <значение> \
+            - удалить запись.\n',
           '<command> info <имя_таблицы> - вывести информацию о таблице.\n',
           '<command> exit: выйти из программы.\n',
           '<command> help: справочная информация.\n'

@@ -1,4 +1,4 @@
-from primitive_db.decorators import handle_db_errors, confirm_action, log_time
+from primitive_db.decorators import confirm_action, handle_db_errors, log_time
 
 
 @handle_db_errors
@@ -99,7 +99,7 @@ def _col_index(columns):
 @log_time()
 @handle_db_errors
 def select(table_data, where_clause=None) -> dict:
-    if where_clause == None:
+    if where_clause is None:
         return table_data
 
     col_index = _col_index(table_data['columns'])

@@ -1,5 +1,5 @@
-import time
 import functools
+import time
 
 
 def handle_db_errors(func):
@@ -8,8 +8,8 @@ def handle_db_errors(func):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
-            print(
-                "Ошибка: Файл данных не найден. Возможно, база данных не инициализирована.")
+            print("Ошибка: Файл данных не найден. \
+                  Возможно, база данных не инициализирована.")
         except KeyError as e:
             print(f"Ошибка: {e}")
         except ValueError as e:
