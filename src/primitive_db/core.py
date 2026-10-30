@@ -1,5 +1,5 @@
-from primitive_db.decorators import confirm_action, handle_db_errors, log_time
 from primitive_db.constants import TYPE_MAP
+from primitive_db.decorators import confirm_action, handle_db_errors, log_time
 
 
 @handle_db_errors
