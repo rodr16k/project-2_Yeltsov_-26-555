@@ -35,7 +35,7 @@
 *    **help**- справочная информация
 
 ## Пример использования:  
-[![asciicast](https://asciinema.org/a/e6hAstPQ98A9Vtww.svg)](https://asciinema.org/a/e6hAstPQ98A9Vtww)
+[![asciicast](https://asciinema.org/a/l23gZsFuuBINAewh.svg)](https://asciinema.org/a/l23gZsFuuBINAewh)
 
 * **Создание таблицы:**
   ```text
@@ -44,26 +44,30 @@
   ```
 * **Добавление строки:**
   ```text
-  Введите команду: insert into users values ('John', 27)
+  Введите команду: insert into users values ('John', 31)
+  Функция insert выполнилась за 0.000 секунд
   Строка добавлена
   ```
 * **Выбор значений из таблицы:**
   ```text
-  Введите команду: select from users
+  Введите команду: select from users where name = 'John'
+  Функция select выполнилась за 0.000 секунд
   +----+------+-----+
   | ID | name | age |
   +----+------+-----+
-  | 0  | John |  27 |
+  | 0  | John |  31 |
   +----+------+-----+
   ```
 * **Удаление строки:**
   ```text
-  Введите команду: delete from users where age = 27
+  Введите команду: delete from users where age = 31
+  Вы уверены, что хотите выполнить "удаление записей"? [y/n]: y
   Удалено 1 строк из таблицы users
   ```
 * **Удаление таблицы:**
   ```text
   Введите команду: drop_table users
+  Вы уверены, что хотите выполнить "удаление таблицы"? [y/n]: y
   Таблица users удалена.
   ```
 * **Выход:**
