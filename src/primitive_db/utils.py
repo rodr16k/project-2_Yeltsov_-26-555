@@ -1,11 +1,7 @@
 import json
-from pathlib import Path
-
 import prompt
 from prettytable import PrettyTable
-
-DB_DIR = Path('data')
-METADATA_FILE = DB_DIR / 'metadata.json'
+from primitive_db.constants import DB_DIR, METADATA_FILE
 
 
 def print_table(table_data: dict):
@@ -21,7 +17,8 @@ def print_table(table_data: dict):
 
 
 def print_help():
-    """Prints the help message for the current mode."""
+    """Печатает сообщение с инструкцией \
+        по взаимодействию базой данных."""
 
     print("\n***Процесс работы с таблицей***")
     print("Управление таблицами:")
@@ -76,6 +73,7 @@ def delete_table_data(table_name):
 
 
 def load_catalog():
+    '''Загружает метаданные каталога таблиц'''
     try:
         with open(METADATA_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -84,17 +82,20 @@ def load_catalog():
 
 
 def save_catalog(catalog):
+    '''Сохраняет метаданные в каталог'''
     DB_DIR.mkdir(parents=True, exist_ok=True)
     with open(METADATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(catalog, f, ensure_ascii=False, indent=4)
 
 
 def prompt_input():
+    '''Запрашивает ввод'''
     user_input = prompt.string("Введите команду: ")
     return user_input
 
 
 def welcome():
+    '''Приветственная функция перед запуском основного цикла'''
     print("===== Функции: =====\n")
     print('<command> create_table <имя_таблицы> <столбец1:тип> <столбец2:тип>\
            - создать таблицу.\n',

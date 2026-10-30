@@ -103,6 +103,7 @@ def parse_command(query: str) -> tuple:
 
 # select from <имя_таблицы> where <столбец> = <значение>
 def parse_select(rest: str) -> tuple[str, dict]:
+    '''Достает аргументы table_name и where_clause из select'''
     parts = rest.strip().split(maxsplit=1)
     if len(parts) != 2 or parts[0] != 'from':
         raise ValueError(

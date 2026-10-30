@@ -129,6 +129,7 @@ EXIT = 'exit'
 
 
 def execute_command(parsed):
+    '''Вызывает соответствующую функцию из HANDLERS'''
     command, rest = parsed
     if command == EXIT:
         return EXIT
@@ -139,6 +140,7 @@ def execute_command(parsed):
 
 
 def run():
+    '''Запускает основной цикл программы'''
     welcome()
 
     while True:

@@ -1,4 +1,5 @@
 from primitive_db.decorators import confirm_action, handle_db_errors, log_time
+from primitive_db.constants import TYPE_MAP
 
 
 @handle_db_errors
@@ -61,8 +62,6 @@ def list_tables(metadata):
 
 
 # CRUD Функции
-
-TYPE_MAP = {'int': int, 'str': str, 'bool': bool}
 
 
 @log_time()
